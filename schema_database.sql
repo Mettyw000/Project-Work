@@ -61,24 +61,6 @@ CREATE TABLE storico_asset (
     nota_modifica TEXT
 );
 
--- 7. TRIGGER: Gestione automatica dello storico (Versioning)
-CREATE OR REPLACE FUNCTION func_registra_storico()
-RETURNS TRIGGER AS $$
-BEGIN
-    -- Se cambia il proprietario dell'asset, salva il vecchio nello storico
-    IF (OLD.id_proprietario IS DISTINCT FROM NEW.id_proprietario) THEN
-        INSERT INTO storico_asset(id_asset, vecchio_proprietario_id, nota_modifica)
-        VALUES (OLD.id_asset, OLD.id_proprietario, 'Variazione Asset Owner (Proprietario)');
-    END IF;
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER trg_audit_asset
-BEFORE UPDATE ON asset
-FOR EACH ROW
-EXECUTE FUNCTION func_registra_storico();
-
 -- 8. VIEW: Generazione Report Strutturato per ACN (Output per Profilo NIS2)
 CREATE VIEW report_conformita_acn AS
 SELECT 
