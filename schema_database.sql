@@ -61,7 +61,7 @@ CREATE TABLE storico_asset (
     nota_modifica TEXT
 );
 
--- 8. VIEW: Generazione Report Strutturato per ACN (Output per Profilo NIS2)
+-- 7. VIEW: Generazione Report Strutturato per ACN (Output per Profilo NIS2)
 CREATE VIEW report_conformita_acn AS
 SELECT 
     s.nome_servizio AS "Servizio_Critico",
