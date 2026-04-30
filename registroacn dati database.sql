@@ -1,15 +1,29 @@
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Creato il: Apr 30, 2026 alle 18:34
+-- Versione del server: 10.4.32-MariaDB
+-- Versione PHP: 8.2.12
+
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
 
-CREATE TABLE `assessment` (
-  `id_assessment` bigint(20) UNSIGNED NOT NULL,
-  `tipo_test` varchar(50) DEFAULT NULL CHECK (`tipo_test` in ('Vulnerability Assessment','Penetration Test','Code Review')),
-  `data_esecuzione` date NOT NULL,
-  `esecutore_interno_id` bigint(20) UNSIGNED DEFAULT NULL,
-  `fornitore_esterno_id` bigint(20) UNSIGNED DEFAULT NULL,
-  `report_file_path` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Database: `registroacn`
+--
+
+--
+-- Dump dei dati per la tabella `assessment`
+--
 
 INSERT INTO `assessment` (`id_assessment`, `tipo_test`, `data_esecuzione`, `esecutore_interno_id`, `fornitore_esterno_id`, `report_file_path`) VALUES
 (1, 'Vulnerability Assessment', '2024-01-15', 2, 2, '/reports/2024/va_mensile_gennaio.pdf'),
@@ -28,16 +42,9 @@ INSERT INTO `assessment` (`id_assessment`, `tipo_test`, `data_esecuzione`, `esec
 (14, 'Vulnerability Assessment', '2024-12-01', 4, 9, '/reports/2024/va_fine_anno_asset_critici.pdf'),
 (15, 'Code Review', '2024-12-20', 3, 3, '/reports/2024/analisi_sicurezza_api_cloud.pdf');
 
-
-CREATE TABLE `asset` (
-  `id_asset` bigint(20) UNSIGNED NOT NULL,
-  `nome_macchinario` varchar(100) NOT NULL,
-  `tipo_asset` varchar(50) DEFAULT NULL,
-  `ubicazione` varchar(100) DEFAULT NULL,
-  `id_proprietario` bigint(20) UNSIGNED DEFAULT NULL,
-  `id_fornitore` bigint(20) UNSIGNED DEFAULT NULL,
-  `data_ultimo_aggiornamento` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+--
+-- Dump dei dati per la tabella `asset`
+--
 
 INSERT INTO `asset` (`id_asset`, `nome_macchinario`, `tipo_asset`, `ubicazione`, `id_proprietario`, `id_fornitore`, `data_ultimo_aggiornamento`) VALUES
 (1, 'Server Cluster Proxmox 01', 'Server Fisico', 'Data Center Piano Terra', 4, 7, '2026-04-08 15:54:14'),
@@ -81,14 +88,9 @@ INSERT INTO `asset` (`id_asset`, `nome_macchinario`, `tipo_asset`, `ubicazione`,
 (39, 'Server Database SQL', 'VM', 'Cluster 01', 4, 11, '2026-04-08 15:54:14'),
 (40, 'Stazione Saldatura Manuale JBC', 'Saldatrice', 'Area Rilavorazioni', 23, 14, '2026-04-08 15:54:14');
 
-
-CREATE TABLE `dipendenti` (
-  `id_dipendente` bigint(20) UNSIGNED NOT NULL,
-  `nome` varchar(50) NOT NULL,
-  `cognome` varchar(50) NOT NULL,
-  `ruolo` varchar(50) NOT NULL,
-  `email` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+--
+-- Dump dei dati per la tabella `dipendenti`
+--
 
 INSERT INTO `dipendenti` (`id_dipendente`, `nome`, `cognome`, `ruolo`, `email`) VALUES
 (1, 'Alessandro', 'Conti', 'CISO', 'alessandro.conti@electrocore.it'),
@@ -117,7 +119,7 @@ INSERT INTO `dipendenti` (`id_dipendente`, `nome`, `cognome`, `ruolo`, `email`) 
 (24, 'Sara', 'Serra', 'Assemblatore Componenti', 'sara.serra@electrocore.it'),
 (25, 'Luca', 'Coppola', 'Assemblatore Componenti', 'luca.coppola@electrocore.it'),
 (26, 'Anna', 'De Santis', 'Collaudatore', 'anna.desantis@electrocore.it'),
-(27, 'Matteo', 'Angelo', 'Collaudatore', 'matteo.dangelo@electrocore.it'),
+(27, 'Matteo', 'D\'Angelo', 'Collaudatore', 'matteo.dangelo@electrocore.it'),
 (28, 'Marta', 'Marchetti', 'Analista Dati', 'marta.marchetti@electrocore.it'),
 (29, 'Giovanni', 'Parisi', 'Responsabile Magazzino', 'giovanni.parisi@electrocore.it'),
 (30, 'Elisa', 'Villa', 'Magazziniere', 'elisa.villa@electrocore.it'),
@@ -132,12 +134,9 @@ INSERT INTO `dipendenti` (`id_dipendente`, `nome`, `cognome`, `ruolo`, `email`) 
 (39, 'Paolo', 'Romano', 'Progettista CAD', 'paolo.romano@electrocore.it'),
 (40, 'Veronica', 'Colombo', 'Responsabile Conformità', 'veronica.colombo@electrocore.it');
 
-
-CREATE TABLE `dipendenze_asset_servizio` (
-  `id_asset` bigint(20) UNSIGNED NOT NULL,
-  `id_servizio` bigint(20) UNSIGNED NOT NULL,
-  `impatto_guasto` varchar(50) DEFAULT 'Parziale'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+--
+-- Dump dei dati per la tabella `dipendenze_asset_servizio`
+--
 
 INSERT INTO `dipendenze_asset_servizio` (`id_asset`, `id_servizio`, `impatto_guasto`) VALUES
 (1, 3, 'Bloccante'),
@@ -171,13 +170,9 @@ INSERT INTO `dipendenze_asset_servizio` (`id_asset`, `id_servizio`, `impatto_gua
 (38, 2, 'Trascurabile'),
 (39, 3, 'Bloccante');
 
-
-CREATE TABLE `fornitori` (
-  `id_fornitore` bigint(20) UNSIGNED NOT NULL,
-  `nome_azienda` varchar(100) NOT NULL,
-  `contatto_emergenza` varchar(100) DEFAULT NULL,
-  `livello_accesso` varchar(50) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+--
+-- Dump dei dati per la tabella `fornitori`
+--
 
 INSERT INTO `fornitori` (`id_fornitore`, `nome_azienda`, `contatto_emergenza`, `livello_accesso`) VALUES
 (1, 'Silicon Valley Materials', '+1-555-0101', 'Nessun Accesso'),
@@ -206,17 +201,9 @@ INSERT INTO `fornitori` (`id_fornitore`, `nome_azienda`, `contatto_emergenza`, `
 (24, 'Backup Cloud Services', 'soc@backupservices.com', 'Cloud API / Remoto'),
 (25, 'SmartFactory Integrators', '+39 02 3344556', 'Remoto e Fisico');
 
-
-CREATE TABLE `gap_analisi` (
-  `id_gap` bigint(20) UNSIGNED NOT NULL,
-  `id_misura` bigint(20) UNSIGNED NOT NULL,
-  `id_profilo_corrente` bigint(20) UNSIGNED NOT NULL,
-  `id_profilo_obiettivo` bigint(20) UNSIGNED NOT NULL,
-  `priorita` varchar(10) DEFAULT 'Media' CHECK (`priorita` in ('Alta','Media','Bassa')),
-  `piano_azione` text DEFAULT NULL,
-  `scadenza` date DEFAULT NULL,
-  `id_responsabile` bigint(20) UNSIGNED DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+--
+-- Dump dei dati per la tabella `gap_analisi`
+--
 
 INSERT INTO `gap_analisi` (`id_gap`, `id_misura`, `id_profilo_corrente`, `id_profilo_obiettivo`, `priorita`, `piano_azione`, `scadenza`, `id_responsabile`) VALUES
 (1, 2, 1, 2, 'Alta', 'Redigere una strategia formale di gestione del rischio cyber. Includere soglie di tolleranza, KRI e integrazione con il risk management aziendale.', '2024-06-30', 1),
@@ -235,15 +222,9 @@ INSERT INTO `gap_analisi` (`id_gap`, `id_misura`, `id_profilo_corrente`, `id_pro
 (14, 5, 13, 14, 'Media', 'Integrare i risultati dei VA nella supply chain risk assessment. Richiedere rapporti di sicurezza ai fornitori con accesso remoto privilegiato.', '2025-12-31', 8),
 (15, 2, 15, 2, 'Alta', 'Aggiornare la strategia di gestione del rischio in conformità alle nuove linee guida ACN 2025. Presentare al board entro Q1 2026.', '2026-03-31', 1);
 
-
-CREATE TABLE `misura_sicurezza` (
-  `id_misura` bigint(20) UNSIGNED NOT NULL,
-  `codice` varchar(20) NOT NULL,
-  `funzione_acn` varchar(10) NOT NULL CHECK (`funzione_acn` in ('GV','ID','PR','DE','RS','RC')),
-  `nome` varchar(150) NOT NULL,
-  `descrizione` text DEFAULT NULL,
-  `livello_minimo` tinyint(1) DEFAULT 1
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+--
+-- Dump dei dati per la tabella `misura_sicurezza`
+--
 
 INSERT INTO `misura_sicurezza` (`id_misura`, `codice`, `funzione_acn`, `nome`, `descrizione`, `livello_minimo`) VALUES
 (1, 'GV.OC-01', 'GV', 'Contesto organizzativo e missione', 'Definire e documentare la missione, i valori e il contesto operativo dell organizzazione ai fini della cybersecurity.', 1),
@@ -262,15 +243,9 @@ INSERT INTO `misura_sicurezza` (`id_misura`, `codice`, `funzione_acn`, `nome`, `
 (14, 'RS.CO-01', 'RS', 'Comunicazione degli incidenti', 'Gestire le comunicazioni durante e dopo un incidente con le parti interessate interne ed esterne, incluse le autorità.', 2),
 (15, 'RC.RP-01', 'RC', 'Piano di ripristino delle attività', 'Definire e testare piani di continuità operativa e disaster recovery per i servizi e i sistemi critici identificati.', 1);
 
-
-CREATE TABLE `profilo_acn` (
-  `id_profilo` bigint(20) UNSIGNED NOT NULL,
-  `tipo` varchar(10) NOT NULL CHECK (`tipo` in ('corrente','obiettivo')),
-  `versione` varchar(20) NOT NULL DEFAULT '1.0',
-  `data_valutazione` date NOT NULL,
-  `id_responsabile` bigint(20) UNSIGNED DEFAULT NULL,
-  `note` text DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+--
+-- Dump dei dati per la tabella `profilo_acn`
+--
 
 INSERT INTO `profilo_acn` (`id_profilo`, `tipo`, `versione`, `data_valutazione`, `id_responsabile`, `note`) VALUES
 (1, 'corrente', '1.0', '2024-01-15', 1, 'Prima valutazione baseline dell anno 2024. Eseguita dal CISO con supporto IT.'),
@@ -289,15 +264,9 @@ INSERT INTO `profilo_acn` (`id_profilo`, `tipo`, `versione`, `data_valutazione`,
 (14, 'obiettivo', '2.2', '2025-07-07', 3, 'Target integrato con piano zero-trust per accessi remoti fornitori.'),
 (15, 'corrente', '2.3', '2025-10-20', 1, 'Assessment Q4 2025: verifica conformità NIS2 in vista scadenza normativa.');
 
-
-CREATE TABLE `profilo_misura` (
-  `id_profilo_misura` bigint(20) UNSIGNED NOT NULL,
-  `id_profilo` bigint(20) UNSIGNED NOT NULL,
-  `id_misura` bigint(20) UNSIGNED NOT NULL,
-  `livello_maturita` tinyint(1) NOT NULL DEFAULT 0 CHECK (`livello_maturita` between 0 and 5),
-  `stato` varchar(30) DEFAULT 'Non valutato' CHECK (`stato` in ('Non valutato','Parziale','Conforme','Non applicabile')),
-  `evidenze` text DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+--
+-- Dump dei dati per la tabella `profilo_misura`
+--
 
 INSERT INTO `profilo_misura` (`id_profilo_misura`, `id_profilo`, `id_misura`, `livello_maturita`, `stato`, `evidenze`) VALUES
 (1, 1, 1, 2, 'Parziale', 'Documento di missione presente ma non aggiornato al 2024. Mancano obiettivi di sicurezza formalizzati.'),
@@ -314,29 +283,25 @@ INSERT INTO `profilo_misura` (`id_profilo_misura`, `id_profilo`, `id_misura`, `l
 (12, 5, 13, 2, 'Parziale', 'Piano di risposta agli incidenti redatto ma non testato con simulazioni. Prima esercitazione pianificata.'),
 (13, 7, 12, 3, 'Conforme', 'Correlazione eventi attiva su SIEM con regole custom per anomalie OT. Falsi positivi sotto soglia accettabile.'),
 (14, 9, 6, 3, 'Conforme', 'Procedura vendor risk assessment implementata. Questionari inviati a 18 fornitori critici su 25.'),
-(15, 9, 15, 2, 'Parziale', 'Piano DR testato solo per sistemi IT core. Sistemi OT e linea di produzione non ancora inclusi nel BCP.');
+(15, 9, 15, 2, 'Parziale', 'Piano DR testato solo per sistemi IT core. Sistemi OT e linea di produzione non ancora inclusi nel BCP.'),
+(16, 2, 2, 3, 'Conforme', 'Obiettivo: strategia rischio cyber formalizzata con KRI e soglie di tolleranza.'),
+(17, 2, 4, 4, 'Conforme', 'Obiettivo: inventario software esteso a tutti i sistemi inclusi OT e workstation.'),
+(18, 2, 5, 3, 'Conforme', 'Obiettivo: VA esteso a perimetro OT con scansioni automatizzate mensili.'),
+(19, 2, 6, 3, 'Conforme', 'Obiettivo: vendor risk assessment formalizzato con questionari e clausole NIS2.'),
+(20, 2, 8, 3, 'Conforme', 'Obiettivo: piano formazione annuale cybersecurity per ruolo completato.'),
+(21, 4, 11, 4, 'Conforme', 'Obiettivo: SIEM completamente deployato su tutti i segmenti di rete inclusi OT.'),
+(22, 6, 13, 4, 'Conforme', 'Obiettivo: piano risposta incidenti testato con tabletop exercise OT inclusi.'),
+(23, 6, 15, 4, 'Conforme', 'Obiettivo: piano DR esteso a sistemi OT con RTO/RPO definiti e test di failover.'),
+(24, 8, 10, 4, 'Conforme', 'Obiettivo: gestione configurazioni CIS Benchmarks implementata su tutti i server.'),
+(25, 8, 14, 3, 'Conforme', 'Obiettivo: procedure comunicazione incidenti verso ACN testate e referente nominato.'),
+(26, 10, 6, 4, 'Conforme', 'Obiettivo: vendor risk assessment completato su tutti i 25 fornitori critici.'),
+(27, 10, 15, 4, 'Conforme', 'Obiettivo: sistemi produzione inclusi nel BCP con accordi fornitori chiave stipulati.'),
+(28, 12, 9, 4, 'Conforme', 'Obiettivo: cifratura estesa a workstation R&D e restore test OT trimestrali attivi.'),
+(29, 14, 5, 4, 'Conforme', 'Obiettivo: VA integrato con supply chain assessment e reportistica fornitori privilegiati.');
 
-
-CREATE TABLE `report_conformita_acn` (
-`Servizio_Critico` varchar(100)
-,`Classe_Critica_ACN` varchar(20)
-,`Asset_Tecnologico` varchar(100)
-,`Categoria_Risorsa` varchar(50)
-,`Punto_Contatto_Responsabile` varchar(101)
-,`Email_Referente` varchar(100)
-,`Supporto_Terze_Parti` varchar(100)
-);
-
-
-CREATE TABLE `rilevazioni_sicurezza` (
-  `id_rilevazione` bigint(20) UNSIGNED NOT NULL,
-  `id_asset` bigint(20) UNSIGNED DEFAULT NULL,
-  `id_vulnerabilita` bigint(20) UNSIGNED DEFAULT NULL,
-  `id_assessment` bigint(20) UNSIGNED DEFAULT NULL,
-  `stato_remediation` varchar(30) DEFAULT 'Aperta' CHECK (`stato_remediation` in ('Aperta','In Gestione','Risolta','Rischio Accettato')),
-  `data_scadenza_patch` date DEFAULT NULL,
-  `note_tecniche` text DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+--
+-- Dump dei dati per la tabella `rilevazioni_sicurezza`
+--
 
 INSERT INTO `rilevazioni_sicurezza` (`id_rilevazione`, `id_asset`, `id_vulnerabilita`, `id_assessment`, `stato_remediation`, `data_scadenza_patch`, `note_tecniche`) VALUES
 (1, 1, 1, 1, 'Risolta', '2024-02-01', 'Patch Log4j applicata con successo su server produzione.'),
@@ -346,7 +311,7 @@ INSERT INTO `rilevazioni_sicurezza` (`id_rilevazione`, `id_asset`, `id_vulnerabi
 (5, 4, 9, 2, 'In Gestione', '2024-03-20', 'Cambio password massivo su router industriali pianificato.'),
 (6, 5, 6, 4, 'Aperta', '2024-04-20', 'Vulnerabilità Spring4Shell rilevata su ambiente di test.'),
 (7, 6, 13, 5, 'Rischio Accettato', '2024-03-01', 'Protocollo TLS 1.1 mantenuto per compatibilità con vecchio macchinario CNC.'),
-(8, 2, 8, 2, 'Risolta', '2024-03-01', 'Exchange Server aggiornato ultimo Cumulative Update.'),
+(8, 2, 8, 2, 'Risolta', '2024-03-01', 'Exchange Server aggiornato all\'ultimo Cumulative Update.'),
 (9, 7, 10, 9, 'In Gestione', '2024-08-15', 'Patching Domain Controller in corso durante finestra di manutenzione.'),
 (10, 8, 14, 10, 'Aperta', '2024-09-01', 'VPN Fortinet esposta, aggiornamento firmware urgente richiesto.'),
 (11, 3, 11, 7, 'Risolta', '2024-06-15', 'Configurazione Nginx corretta e PHP aggiornato alla 8.1.'),
@@ -355,14 +320,9 @@ INSERT INTO `rilevazioni_sicurezza` (`id_rilevazione`, `id_asset`, `id_vulnerabi
 (14, 4, 3, 2, 'Risolta', '2024-03-10', 'Applicata patch Microsoft Outlook su tutte le workstation.'),
 (15, 10, 7, 13, 'Aperta', '2024-11-30', 'WinRAR obsoleto rilevato su postazioni ufficio acquisti.');
 
-
-CREATE TABLE `servizi` (
-  `id_servizio` bigint(20) UNSIGNED NOT NULL,
-  `nome_servizio` varchar(100) NOT NULL,
-  `criticita_acn` varchar(20) DEFAULT NULL CHECK (`criticita_acn` in ('Alta','Media','Bassa')),
-  `tempo_max_fermo_ore` int(11) DEFAULT NULL,
-  `id_responsabile` bigint(20) UNSIGNED DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+--
+-- Dump dei dati per la tabella `servizi`
+--
 
 INSERT INTO `servizi` (`id_servizio`, `nome_servizio`, `criticita_acn`, `tempo_max_fermo_ore`, `id_responsabile`) VALUES
 (1, 'Linea Produzione Schede Madri (SMT)', 'Alta', 2, 5),
@@ -391,229 +351,57 @@ INSERT INTO `servizi` (`id_servizio`, `nome_servizio`, `criticita_acn`, `tempo_m
 (24, 'Laboratorio Ricerca e Sviluppo (R&D)', 'Bassa', 48, 11),
 (25, 'Infrastruttura Wi-Fi Industriale', 'Media', 4, 9);
 
+--
+-- Dump dei dati per la tabella `storico_asset`
+--
 
-CREATE TABLE `storico_asset` (
-  `id_storico` bigint(20) UNSIGNED NOT NULL,
-  `id_asset` bigint(20) UNSIGNED DEFAULT NULL,
-  `vecchio_proprietario_id` bigint(20) UNSIGNED DEFAULT NULL,
-  `data_modifica` timestamp NOT NULL DEFAULT current_timestamp(),
-  `nota_modifica` text DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+INSERT INTO `storico_asset` (`id_storico`, `id_asset`, `vecchio_proprietario_id`, `data_modifica`, `nota_modifica`) VALUES
+(1, 1, 7, '2024-02-15 08:30:00', 'Riorganizzazione reparto IT: responsabilità infrastruttura server trasferita da SysAdmin a IT Manager per allineamento organigramma.'),
+(2, 4, 9, '2024-03-20 13:15:00', 'Post-incident review: la gestione del firewall perimetrale viene assunta direttamente dal CISO a seguito di anomalia di configurazione rilevata durante il Penetration Test di febbraio.'),
+(3, 12, 18, '2024-05-10 09:00:00', 'Internalizzazione manutenzione OT: la proprietà dei macchinari robotici è trasferita al Responsabile di Produzione. Aggiornamento asset register per conformità NIS2 - art. 21 gestione supply chain.'),
+(4, 16, 39, '2024-09-01 06:45:00', 'Cambio assegnazione workstation CAD a seguito di promozione interna: Serena Esposito nominata Lead Designer R&D. Aggiornamento registro asset e revisione accessi software Altium Designer.'),
+(5, 29, 7, '2024-11-18 15:00:00', 'Separazione governance IT/OT: il Gateway IoT di produzione passa sotto il Responsabile Produzione. Scelta motivata dalla distinzione tra asset IT (gestiti da IT Manager) e asset OT/IoT (gestiti da Responsabile Produzione) in conformità alla valutazione dei rischi NIS2.');
 
-
-CREATE TABLE `vista_gap_analisi` (
-`id_gap` bigint(20) unsigned
-,`codice_misura` varchar(20)
-,`funzione_acn` varchar(10)
-,`nome_misura` varchar(150)
-,`livello_corrente` tinyint(1)
-,`livello_obiettivo` tinyint(1)
-,`delta_maturita` int(5)
-,`priorita` varchar(10)
-,`piano_azione` text
-,`scadenza` date
-,`responsabile` varchar(101)
-);
-
-
-CREATE TABLE `vulnerabilita` (
-  `id_vulnerabilita` bigint(20) UNSIGNED NOT NULL,
-  `codice_cve` varchar(20) DEFAULT NULL,
-  `descrizione` text NOT NULL,
-  `severita` varchar(20) DEFAULT NULL CHECK (`severita` in ('Critica','Alta','Media','Bassa')),
-  `cvss_score` decimal(3,1) DEFAULT NULL,
-  `soluzione_consigliata` text DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+--
+-- Dump dei dati per la tabella `vulnerabilita`
+--
 
 INSERT INTO `vulnerabilita` (`id_vulnerabilita`, `codice_cve`, `descrizione`, `severita`, `cvss_score`, `soluzione_consigliata`) VALUES
 (1, 'CVE-2021-44228', 'Log4Shell: Esecuzione di codice remoto nel framework Apache Log4j.', 'Critica', 10.0, 'Aggiornare Log4j alla versione 2.17.1 o superiore.'),
 (2, 'CVE-2017-0144', 'EternalBlue: Vulnerabilità nel protocollo SMBv1 sfruttata da WannaCry.', 'Critica', 8.1, 'Disabilitare SMBv1 e applicare la patch MS17-010.'),
 (3, 'CVE-2023-23397', 'Privilege Escalation in Microsoft Outlook tramite file audio malevoli.', 'Alta', 9.8, 'Installare gli aggiornamenti di sicurezza Microsoft di Marzo 2023.'),
 (4, 'CVE-2014-0160', 'Heartbleed: Lettura memoria sensibile in OpenSSL (Information Leak).', 'Alta', 7.5, 'Aggiornare OpenSSL e rigenerare le chiavi private dei certificati SSL.'),
-(5, 'N/A-OWASP-01', 'SQL Injection nel modulo di login del portale fornitori.', 'Alta', 8.5, 'Utilizzare Prepared Statements e validazione rigorosa dell input.'),
+(5, 'N/A-OWASP-01', 'SQL Injection nel modulo di login del portale fornitori.', 'Alta', 8.5, 'Utilizzare Prepared Statements e validazione rigorosa dell\'input.'),
 (6, 'CVE-2022-22965', 'Spring4Shell: Remote Code Execution nel framework Spring Core.', 'Critica', 9.8, 'Aggiornare a Spring Framework 5.3.18 o versioni successive.'),
-(7, 'CVE-2023-38831', 'Vulnerabilità di WinRAR nella elaborazione di estensioni di file contraffatte.', 'Alta', 7.8, 'Aggiornare WinRAR alla versione 6.23 o superiore.'),
+(7, 'CVE-2023-38831', 'Vulnerabilità di WinRAR nell\'elaborazione di estensioni di file contraffatte.', 'Alta', 7.8, 'Aggiornare WinRAR alla versione 6.23 o superiore.'),
 (8, 'CVE-2021-34473', 'ProxyShell: Catena di vulnerabilità in Microsoft Exchange Server.', 'Critica', 9.8, 'Installare i Cumulative Update (CU) rilasciati da Microsoft.'),
 (9, 'N/A-MISC-02', 'Utilizzo di password di default (admin/admin) su pannello router industriale.', 'Alta', 8.0, 'Imporre il cambio password al primo accesso e disabilitare telnet.'),
 (10, 'CVE-2020-1472', 'Zerologon: Elevazione dei privilegi nel protocollo Netlogon di Windows.', 'Critica', 10.0, 'Applicare la patch di sicurezza del Domain Controller Microsoft.'),
 (11, 'CVE-2019-11043', 'Remote Code Execution in PHP-FPM in configurazioni Nginx.', 'Alta', 8.1, 'Aggiornare PHP alla versione corretta e modificare la configurazione FastCGI.'),
 (12, 'CVE-2023-4863', 'Heap Buffer Overflow nella libreria libwebp (Google Chrome/Edge).', 'Alta', 8.8, 'Aggiornare il browser e le librerie grafiche di sistema.'),
-(13, 'N/A-WEAK-01', 'Protocollo TLS 1.0/1.1 abilitato su web server aziendale.', 'Media', 4.3, 'Disabilitare TLS 1.0/1.1 e forzare uso di TLS 1.2 o 1.3.'),
+(13, 'N/A-WEAK-01', 'Protocollo TLS 1.0/1.1 abilitato su web server aziendale.', 'Media', 4.3, 'Disabilitare TLS 1.0/1.1 e forzare l\'uso di TLS 1.2 o 1.3.'),
 (14, 'CVE-2018-13379', 'Path Traversal nel portale VPN Fortinet FortiGate.', 'Alta', 9.8, 'Aggiornare il firmware FortiOS alla versione più recente.'),
 (15, 'N/A-AUTH-03', 'Mancata implementazione della Multi-Factor Authentication (MFA).', 'Media', 5.5, 'Abilitare MFA tramite TOTP o chiavi hardware FIDO2.');
 
+-- --------------------------------------------------------
 
+--
+-- Struttura per vista `report_conformita_acn`
+--
 DROP TABLE IF EXISTS `report_conformita_acn`;
 
 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `report_conformita_acn`  AS SELECT `s`.`nome_servizio` AS `Servizio_Critico`, `s`.`criticita_acn` AS `Classe_Critica_ACN`, `a`.`nome_macchinario` AS `Asset_Tecnologico`, `a`.`tipo_asset` AS `Categoria_Risorsa`, concat(`dip`.`nome`,' ',`dip`.`cognome`) AS `Punto_Contatto_Responsabile`, `dip`.`email` AS `Email_Referente`, coalesce(`f`.`nome_azienda`,'Manutenzione Interna') AS `Supporto_Terze_Parti` FROM ((((`servizi` `s` left join `dipendenti` `dip` on(`s`.`id_responsabile` = `dip`.`id_dipendente`)) left join `dipendenze_asset_servizio` `das` on(`s`.`id_servizio` = `das`.`id_servizio`)) left join `asset` `a` on(`das`.`id_asset` = `a`.`id_asset`)) left join `fornitori` `f` on(`a`.`id_fornitore` = `f`.`id_fornitore`)) ;
 
+-- --------------------------------------------------------
+
+--
+-- Struttura per vista `vista_gap_analisi`
+--
 DROP TABLE IF EXISTS `vista_gap_analisi`;
 
 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vista_gap_analisi`  AS SELECT `ga`.`id_gap` AS `id_gap`, `ms`.`codice` AS `codice_misura`, `ms`.`funzione_acn` AS `funzione_acn`, `ms`.`nome` AS `nome_misura`, `pm_c`.`livello_maturita` AS `livello_corrente`, `pm_o`.`livello_maturita` AS `livello_obiettivo`, `pm_o`.`livello_maturita`- `pm_c`.`livello_maturita` AS `delta_maturita`, `ga`.`priorita` AS `priorita`, `ga`.`piano_azione` AS `piano_azione`, `ga`.`scadenza` AS `scadenza`, concat(`dip`.`nome`,' ',`dip`.`cognome`) AS `responsabile` FROM ((((`gap_analisi` `ga` join `misura_sicurezza` `ms` on(`ga`.`id_misura` = `ms`.`id_misura`)) join `profilo_misura` `pm_c` on(`pm_c`.`id_misura` = `ga`.`id_misura` and `pm_c`.`id_profilo` = `ga`.`id_profilo_corrente`)) join `profilo_misura` `pm_o` on(`pm_o`.`id_misura` = `ga`.`id_misura` and `pm_o`.`id_profilo` = `ga`.`id_profilo_obiettivo`)) left join `dipendenti` `dip` on(`ga`.`id_responsabile` = `dip`.`id_dipendente`)) WHERE `pm_o`.`livello_maturita` - `pm_c`.`livello_maturita` > 0 ORDER BY `ga`.`priorita` ASC, `pm_o`.`livello_maturita`- `pm_c`.`livello_maturita` DESC ;
-
-
-ALTER TABLE `assessment`
-  ADD PRIMARY KEY (`id_assessment`),
-  ADD KEY `fk_assessment_esecutore_interno` (`esecutore_interno_id`),
-  ADD KEY `fk_assessment_fornitore_esterno` (`fornitore_esterno_id`);
-
-
-ALTER TABLE `asset`
-  ADD PRIMARY KEY (`id_asset`),
-  ADD KEY `fk_asset_proprietario` (`id_proprietario`),
-  ADD KEY `fk_asset_fornitore` (`id_fornitore`);
-
-
-ALTER TABLE `dipendenti`
-  ADD PRIMARY KEY (`id_dipendente`),
-  ADD UNIQUE KEY `email` (`email`);
-
-
-ALTER TABLE `dipendenze_asset_servizio`
-  ADD PRIMARY KEY (`id_asset`,`id_servizio`),
-  ADD KEY `fk_das_servizio` (`id_servizio`);
-
-
-ALTER TABLE `fornitori`
-  ADD PRIMARY KEY (`id_fornitore`);
-
-
-ALTER TABLE `gap_analisi`
-  ADD PRIMARY KEY (`id_gap`),
-  ADD KEY `fk_gap_misura` (`id_misura`),
-  ADD KEY `fk_gap_corrente` (`id_profilo_corrente`),
-  ADD KEY `fk_gap_obiettivo` (`id_profilo_obiettivo`),
-  ADD KEY `fk_gap_responsabile` (`id_responsabile`);
-
-
-ALTER TABLE `misura_sicurezza`
-  ADD PRIMARY KEY (`id_misura`),
-  ADD UNIQUE KEY `codice` (`codice`);
-
-
-ALTER TABLE `profilo_acn`
-  ADD PRIMARY KEY (`id_profilo`),
-  ADD KEY `fk_profilo_responsabile` (`id_responsabile`);
-
-
-ALTER TABLE `profilo_misura`
-  ADD PRIMARY KEY (`id_profilo_misura`),
-  ADD UNIQUE KEY `uq_profilo_misura` (`id_profilo`,`id_misura`),
-  ADD KEY `fk_pm_misura` (`id_misura`);
-
-
-ALTER TABLE `rilevazioni_sicurezza`
-  ADD PRIMARY KEY (`id_rilevazione`),
-  ADD KEY `fk_rilevazioni_asset` (`id_asset`),
-  ADD KEY `fk_rilevazioni_vulnerabilita` (`id_vulnerabilita`),
-  ADD KEY `fk_rilevazioni_assessment` (`id_assessment`);
-
-
-ALTER TABLE `servizi`
-  ADD PRIMARY KEY (`id_servizio`),
-  ADD KEY `fk_servizi_responsabile` (`id_responsabile`);
-
-
-ALTER TABLE `storico_asset`
-  ADD PRIMARY KEY (`id_storico`),
-  ADD KEY `fk_storico_asset` (`id_asset`),
-  ADD KEY `fk_storico_vecchio_proprietario` (`vecchio_proprietario_id`);
-
-
-ALTER TABLE `vulnerabilita`
-  ADD PRIMARY KEY (`id_vulnerabilita`);
-
-
-ALTER TABLE `assessment`
-  MODIFY `id_assessment` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
-
-
-ALTER TABLE `asset`
-  MODIFY `id_asset` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
-
-
-ALTER TABLE `dipendenti`
-  MODIFY `id_dipendente` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
-
-
-ALTER TABLE `fornitori`
-  MODIFY `id_fornitore` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
-
-
-ALTER TABLE `gap_analisi`
-  MODIFY `id_gap` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
-
-
-ALTER TABLE `misura_sicurezza`
-  MODIFY `id_misura` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
-
-
-ALTER TABLE `profilo_acn`
-  MODIFY `id_profilo` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
-
-
-ALTER TABLE `profilo_misura`
-  MODIFY `id_profilo_misura` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
-
-
-ALTER TABLE `rilevazioni_sicurezza`
-  MODIFY `id_rilevazione` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
-
-
-ALTER TABLE `servizi`
-  MODIFY `id_servizio` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
-
-
-ALTER TABLE `storico_asset`
-  MODIFY `id_storico` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
-
-ALTER TABLE `vulnerabilita`
-  MODIFY `id_vulnerabilita` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
-
-
-ALTER TABLE `assessment`
-  ADD CONSTRAINT `fk_assessment_esecutore_interno` FOREIGN KEY (`esecutore_interno_id`) REFERENCES `dipendenti` (`id_dipendente`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_assessment_fornitore_esterno` FOREIGN KEY (`fornitore_esterno_id`) REFERENCES `fornitori` (`id_fornitore`) ON DELETE SET NULL ON UPDATE CASCADE;
-
-
-ALTER TABLE `asset`
-  ADD CONSTRAINT `fk_asset_fornitore` FOREIGN KEY (`id_fornitore`) REFERENCES `fornitori` (`id_fornitore`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_asset_proprietario` FOREIGN KEY (`id_proprietario`) REFERENCES `dipendenti` (`id_dipendente`) ON DELETE SET NULL ON UPDATE CASCADE;
-
-
-ALTER TABLE `dipendenze_asset_servizio`
-  ADD CONSTRAINT `fk_das_asset` FOREIGN KEY (`id_asset`) REFERENCES `asset` (`id_asset`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_das_servizio` FOREIGN KEY (`id_servizio`) REFERENCES `servizi` (`id_servizio`) ON DELETE CASCADE ON UPDATE CASCADE;
-
-
-ALTER TABLE `gap_analisi`
-  ADD CONSTRAINT `fk_gap_corrente` FOREIGN KEY (`id_profilo_corrente`) REFERENCES `profilo_acn` (`id_profilo`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_gap_misura` FOREIGN KEY (`id_misura`) REFERENCES `misura_sicurezza` (`id_misura`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_gap_obiettivo` FOREIGN KEY (`id_profilo_obiettivo`) REFERENCES `profilo_acn` (`id_profilo`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_gap_responsabile` FOREIGN KEY (`id_responsabile`) REFERENCES `dipendenti` (`id_dipendente`) ON DELETE SET NULL ON UPDATE CASCADE;
-
-
-ALTER TABLE `profilo_acn`
-  ADD CONSTRAINT `fk_profilo_responsabile` FOREIGN KEY (`id_responsabile`) REFERENCES `dipendenti` (`id_dipendente`) ON DELETE SET NULL ON UPDATE CASCADE;
-
-
-ALTER TABLE `profilo_misura`
-  ADD CONSTRAINT `fk_pm_misura` FOREIGN KEY (`id_misura`) REFERENCES `misura_sicurezza` (`id_misura`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_pm_profilo` FOREIGN KEY (`id_profilo`) REFERENCES `profilo_acn` (`id_profilo`) ON DELETE CASCADE ON UPDATE CASCADE;
-
-
-ALTER TABLE `rilevazioni_sicurezza`
-  ADD CONSTRAINT `fk_rilevazioni_assessment` FOREIGN KEY (`id_assessment`) REFERENCES `assessment` (`id_assessment`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_rilevazioni_asset` FOREIGN KEY (`id_asset`) REFERENCES `asset` (`id_asset`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_rilevazioni_vulnerabilita` FOREIGN KEY (`id_vulnerabilita`) REFERENCES `vulnerabilita` (`id_vulnerabilita`) ON DELETE SET NULL ON UPDATE CASCADE;
-
-
-ALTER TABLE `servizi`
-  ADD CONSTRAINT `fk_servizi_responsabile` FOREIGN KEY (`id_responsabile`) REFERENCES `dipendenti` (`id_dipendente`) ON DELETE SET NULL ON UPDATE CASCADE;
-
-
-ALTER TABLE `storico_asset`
-  ADD CONSTRAINT `fk_storico_asset` FOREIGN KEY (`id_asset`) REFERENCES `asset` (`id_asset`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_storico_vecchio_proprietario` FOREIGN KEY (`vecchio_proprietario_id`) REFERENCES `dipendenti` (`id_dipendente`) ON DELETE SET NULL ON UPDATE CASCADE;
 COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
