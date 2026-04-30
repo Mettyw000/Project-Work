@@ -26,7 +26,7 @@ SELECT
 FROM report_conformita_acn r
 JOIN servizi s ON s.nome_servizio = r.Servizio_Critico
 WHERE r.Classe_Critica_ACN = 'Alta'
-ORDER BY s.tempo_max_fermo_ore ASC;   -- prima i servizi meno tolleranti ai fermi
+ORDER BY s.tempo_max_fermo_ore ASC;
 
 
 SELECT
@@ -191,95 +191,3 @@ LEFT JOIN profilo_acn    pa ON pm.id_profilo = pa.id_profilo
                             AND pa.tipo = 'corrente'
 WHERE pm.stato IS NULL OR pm.stato != 'Conforme'
 ORDER BY a.nome_macchinario, ms.funzione_acn, ms.codice;
-
-
-SELECT
-    f.nome_azienda                              AS Fornitore,
-    f.livello_accesso                           AS Livello_Accesso,
-    f.contatto_emergenza                        AS Contatto_Emergenza,
-    COUNT(DISTINCT a.id_asset)                  AS Asset_Gestiti,
-    COUNT(DISTINCT ril.id_rilevazione)          AS Vulnerabilita_Aperte,
-    MAX(v.cvss_score)                           AS CVSS_Max,
-    GROUP_CONCAT(DISTINCT v.codice_cve
-                 ORDER BY v.cvss_score DESC
-                 SEPARATOR ', ')                AS CVE_Aperte
-FROM fornitori f
-JOIN asset                  a   ON a.id_fornitore      = f.id_fornitore
-LEFT JOIN rilevazioni_sicurezza ril ON ril.id_asset    = a.id_asset
-                                    AND ril.stato_remediation
-                                        NOT IN ('Risolta','Rischio Accettato')
-LEFT JOIN vulnerabilita     v   ON ril.id_vulnerabilita = v.id_vulnerabilita
-WHERE f.livello_accesso IS NOT NULL
-GROUP BY f.id_fornitore, f.nome_azienda, f.livello_accesso, f.contatto_emergenza
-ORDER BY Vulnerabilita_Aperte DESC, CVSS_Max DESC;
-
-
-SELECT
-    vga.codice_misura                           AS Codice,
-    vga.funzione_acn                            AS Funzione,
-    vga.nome_misura                             AS Misura,
-    vga.livello_corrente                        AS Livello_AS_IS,
-    vga.livello_obiettivo                       AS Livello_TO_BE,
-    vga.delta_maturita                          AS Delta,
-    vga.priorita,
-    vga.piano_azione                            AS Azione_Correttiva,
-    vga.scadenza,
-    vga.responsabile,
-    CASE
-        WHEN vga.scadenza < CURDATE()                          THEN '🔴 SCADUTO'
-        WHEN DATEDIFF(vga.scadenza, CURDATE()) <= 30           THEN '🟠 < 30 giorni'
-        WHEN DATEDIFF(vga.scadenza, CURDATE()) <= 90           THEN '🟡 < 90 giorni'
-        ELSE                                                        '🟢 In tempo'
-    END                                         AS Semaforo_Scadenza
-FROM vista_gap_analisi vga
-ORDER BY
-    FIELD(vga.priorita, 'Alta', 'Media', 'Bassa'),
-    vga.scadenza ASC;
-
-
-SELECT
-    ms.funzione_acn                             AS Funzione,
-    ms.codice                                   AS Codice_Misura,
-    ms.nome                                     AS Misura,
-    pa.versione                                 AS Versione_Profilo,
-    pa.data_valutazione                         AS Data,
-    pa.tipo                                     AS Tipo_Profilo,
-    pm.stato                                    AS Stato,
-    pm.livello_maturita                         AS Maturita,
-    LAG(pm.livello_maturita)
-        OVER (PARTITION BY ms.id_misura
-              ORDER BY pa.data_valutazione)     AS Maturita_Precedente,
-    pm.livello_maturita -
-        COALESCE(LAG(pm.livello_maturita)
-            OVER (PARTITION BY ms.id_misura
-                  ORDER BY pa.data_valutazione), pm.livello_maturita)
-                                                AS Variazione
-FROM profilo_misura pm
-JOIN misura_sicurezza ms ON pm.id_misura   = ms.id_misura
-JOIN profilo_acn      pa ON pm.id_profilo  = pa.id_profilo
-                         AND pa.tipo = 'corrente'
-ORDER BY ms.funzione_acn, ms.codice, pa.data_valutazione;
-
-
-SELECT
-    d.id_dipendente,
-    CONCAT(d.nome, ' ', d.cognome)              AS Dipendente,
-    d.ruolo,
-    d.email,
-    COUNT(DISTINCT s.id_servizio)               AS Servizi_Presidiati,
-    COUNT(DISTINCT a.id_asset)                  AS Asset_Posseduti,
-    COUNT(DISTINCT pa.id_profilo)               AS Profili_ACN_Gestiti,
-    COUNT(DISTINCT ga.id_gap)                   AS Gap_Assegnati,
-    SUM(CASE WHEN ga.priorita = 'Alta' THEN 1 ELSE 0 END) AS Gap_Alta_Priorita,
-    MIN(ga.scadenza)                            AS Prossima_Scadenza_Gap
-FROM dipendenti d
-LEFT JOIN servizi       s  ON s.id_responsabile  = d.id_dipendente
-LEFT JOIN asset         a  ON a.id_proprietario  = d.id_dipendente
-LEFT JOIN profilo_acn   pa ON pa.id_responsabile = d.id_dipendente
-LEFT JOIN gap_analisi   ga ON ga.id_responsabile = d.id_dipendente
-GROUP BY d.id_dipendente, d.nome, d.cognome, d.ruolo, d.email
-HAVING Servizi_Presidiati > 0
-    OR Asset_Posseduti > 0
-    OR Profili_ACN_Gestiti > 0
-    OR Gap_Assegnati > 0
-ORDER BY Gap_Alta_Priorita DESC, Gap_Assegnati DESC;

@@ -12,7 +12,7 @@ SELECT
     END
 FROM report_conformita_acn r
 ORDER BY FIELD(Classe_Critica_ACN, 'Alta', 'Media', 'Bassa'), Servizio_Critico
-INTO OUTFILE 'C:/Users/Aorus/OneDrive/Desktop/Project-Work/dipendenti_it_cyber.csv'
+INTO OUTFILE 'C:/Users/Aorus/OneDrive/Desktop/Project-Work/conformita_servizi_acn.csv'
 FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
 LINES TERMINATED BY '\r\n';
@@ -29,7 +29,7 @@ FROM report_conformita_acn r
 JOIN servizi s ON s.nome_servizio = r.Servizio_Critico
 WHERE r.Classe_Critica_ACN = 'Alta'
 ORDER BY s.tempo_max_fermo_ore ASC
-INTO OUTFILE 'C:/Users/Aorus/OneDrive/Desktop/Project-Work/dipendenti_it_cyber.csv'
+INTO OUTFILE 'C:/Users/Aorus/OneDrive/Desktop/Project-Work/asset_criticita_alta.csv'
 FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
 LINES TERMINATED BY '\r\n';
@@ -50,7 +50,7 @@ LEFT JOIN rilevazioni_sicurezza ril ON ril.id_asset     = a.id_asset
 LEFT JOIN vulnerabilita      v   ON ril.id_vulnerabilita = v.id_vulnerabilita
 GROUP BY f.id_fornitore, f.nome_azienda, f.livello_accesso, f.contatto_emergenza
 ORDER BY COUNT(DISTINCT ril.id_rilevazione) DESC
-INTO OUTFILE 'C:/Users/Aorus/OneDrive/Desktop/Project-Work/dipendenti_it_cyber.csv'
+INTO OUTFILE 'C:/Users/Aorus/OneDrive/Desktop/Project-Work/rischio_fornitori.csv'
 FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
 LINES TERMINATED BY '\r\n';
@@ -84,7 +84,7 @@ JOIN profilo_misura pm_o ON pm_o.id_misura        = ga.id_misura
 LEFT JOIN dipendenti d   ON ga.id_responsabile    = d.id_dipendente
 WHERE pm_o.livello_maturita > pm_c.livello_maturita
 ORDER BY FIELD(ga.priorita,'Alta','Media','Bassa'), ga.scadenza ASC
-INTO OUTFILE 'C:/Users/Aorus/OneDrive/Desktop/Project-Work/dipendenti_it_cyber.csv'
+INTO OUTFILE 'C:/Users/Aorus/OneDrive/Desktop/Project-Work/piano_remediation_gap.csv'
 FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
 LINES TERMINATED BY '\r\n';
@@ -109,7 +109,7 @@ LEFT JOIN profilo_misura pm ON pa.id_profilo      = pm.id_profilo
 LEFT JOIN dipendenti     d  ON pa.id_responsabile = d.id_dipendente
 GROUP BY pa.id_profilo, pa.tipo, pa.versione, pa.data_valutazione, d.nome, d.cognome
 ORDER BY pa.data_valutazione DESC, pa.tipo
-INTO OUTFILE 'C:/Users/Aorus/OneDrive/Desktop/Project-Work/dipendenti_it_cyber.csv'
+INTO OUTFILE 'C:/Users/Aorus/OneDrive/Desktop/Project-Work/riepilogo_profili_acn.csv'
 FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
 LINES TERMINATED BY '\r\n';
@@ -135,7 +135,7 @@ JOIN dipendenti    d ON a.id_proprietario    = d.id_dipendente
 WHERE v.cvss_score >= 7.0
   AND ril.stato_remediation NOT IN ('Risolta','Rischio Accettato')
 ORDER BY v.cvss_score DESC, ril.data_scadenza_patch ASC
-INTO OUTFILE 'C:/Users/Aorus/OneDrive/Desktop/Project-Work/dipendenti_it_cyber.csv'
+INTO OUTFILE 'C:/Users/Aorus/OneDrive/Desktop/Project-Work/vulnerabilita_critiche_aperte.csv'
 FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
 LINES TERMINATED BY '\r\n';
@@ -162,7 +162,7 @@ LEFT JOIN vulnerabilita         v   ON ril.id_vulnerabilita     = v.id_vulnerabi
 GROUP BY asm.id_assessment, asm.tipo_test, asm.data_esecuzione,
          d.nome, d.cognome, f.nome_azienda, asm.report_file_path
 ORDER BY asm.data_esecuzione DESC
-INTO OUTFILE 'C:/Users/Aorus/OneDrive/Desktop/Project-Work/dipendenti_it_cyber.csv'
+INTO OUTFILE 'C:/Users/Aorus/OneDrive/Desktop/Project-Work/riepilogo_assessment.csv'
 FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
 LINES TERMINATED BY '\r\n';
@@ -182,7 +182,7 @@ JOIN asset      a     ON s.id_asset              = a.id_asset
 JOIN dipendenti d_old ON s.vecchio_proprietario_id = d_old.id_dipendente
 JOIN dipendenti d_new ON a.id_proprietario        = d_new.id_dipendente
 ORDER BY s.data_modifica DESC
-INTO OUTFILE 'C:/Users/Aorus/OneDrive/Desktop/Project-Work/dipendenti_it_cyber.csv'
+INTO OUTFILE 'C:/Users/Aorus/OneDrive/Desktop/Project-Work/storico_trasferimenti_asset.csv'
 FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
 LINES TERMINATED BY '\r\n';
@@ -199,7 +199,7 @@ FROM misura_sicurezza ms
 ORDER BY
     FIELD(ms.funzione_acn,'GV','ID','PR','DE','RS','RC'),
     ms.codice
-INTO OUTFILE 'C:/Users/Aorus/OneDrive/Desktop/Project-Work/dipendenti_it_cyber.csv'
+INTO OUTFILE 'C:/Users/Aorus/OneDrive/Desktop/Project-Work/catalogo_misure_acn.csv'
 FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
 LINES TERMINATED BY '\r\n';
@@ -229,7 +229,7 @@ HAVING COUNT(DISTINCT s.id_servizio) > 0
 ORDER BY
     SUM(CASE WHEN ga.priorita='Alta' THEN 1 ELSE 0 END) DESC,
     COUNT(DISTINCT ga.id_gap) DESC
-INTO OUTFILE 'C:/Users/Aorus/OneDrive/Desktop/Project-Work/dipendenti_it_cyber.csv'
+INTO OUTFILE 'C:/Users/Aorus/OneDrive/Desktop/Project-Work/carico_responsabilita_dipendenti.csv'
 FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
 LINES TERMINATED BY '\r\n';
